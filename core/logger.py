@@ -12,7 +12,7 @@ def success(self, message, *args, **kws):
     if self.isEnabledFor(SUCCESS_LEVEL_NUM):
         self._log(SUCCESS_LEVEL_NUM, message, args, **kws)
 
-logging.Logger.success = success
+logging.Logger.success = success    #type: ignore
 
 
 class ColorFormatter(logging.Formatter):
@@ -31,10 +31,13 @@ class ColorFormatter(logging.Formatter):
 
 
 class Logger:
-    def __init__(self, name: str | None = None, filename: str | None = None, stream: bool = True, color: bool = True):
+    def __init__(self, name: str | None = None, filename: str | None = None,
+                 stream: bool = True, color: bool = True
+                 ) -> None:
+        
         self._log = logging.getLogger(name)
         self._log.setLevel(logging.INFO)
-        self._log.propagate = False  # avoids duplicate logs from root
+        self._log.propagate = False
 
         formatter = ColorFormatter("%(asctime)s - %(levelname)s\t - %(message)s", "%Y-%m-%d %H:%M") if color \
                     else logging.Formatter("%(asctime)s - [%(levelname)s]\t - %(message)s", "%Y-%m-%d %H:%M")
@@ -52,8 +55,8 @@ class Logger:
     def set_level(self, level: int):
         self._log.setLevel(level)
 
-    def success(self, msg: object):  # Custom level for success
-        self._log.success(msg)
+    def success(self, msg: object):
+        self._log.success(msg)  # type: ignore
 
     def info(self, msg: object):
         self._log.info(msg)
